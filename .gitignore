@@ -1,0 +1,8 @@
+# Local and temporary files
+.DS_Store
+work/
+outputs/
+node_modules/
+.env
+.env.*
+*.log
