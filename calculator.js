@@ -77,14 +77,10 @@ var MidnightShards = (() => {
     const start = experienceForLevel(level);
     const next = experienceForLevel(level + 1);
     const width = next - start;
-    // A two-decimal client display loses precision. A conservative margin of
-    // 0.01 percentage points covers both rounding and truncation, including 0/100.
-    const minXp = Math.max(start, Math.min(next - 1,
-      next - Math.ceil(width * Math.min(100, percentToGo + 0.01) / 100)));
-    const maxXp = Math.max(start, Math.min(next - 1,
-      next - Math.floor(width * Math.max(0, percentToGo - 0.01) / 100)));
-    return { exact: false, percentToGo,
-      min: planExchange(level, minXp, shards), max: planExchange(level, maxXp, shards) };
+    const xpRemaining = Math.round(width * percentToGo / 100);
+    // Keep the starting XP within the supplied level, including a displayed 0%.
+    const xp = Math.max(start, Math.min(next - 1, next - xpRemaining));
+    return { ...estimateExchange(level, shards, xp), percentToGo };
   }
 
   return { MAX_SHARDS, MAX_LEVEL, experienceForLevel, levelForExperience, planExchange,

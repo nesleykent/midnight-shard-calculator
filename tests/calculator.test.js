@@ -93,44 +93,31 @@ test('percent to go accepts client decimals with comma or dot', () => {
   }
 });
 
-test('percentage means remaining XP, not completed progress', () => {
-  const level = 84;
-  const start = experienceForLevel(level);
-  const next = experienceForLevel(level + 1);
-  const xp = next - Math.round((next - start) * 0.6553);
-  const result = estimateExchangeFromPercent(level, 40, 65.53);
-  const reference = planExchange(level, xp, 40);
-  assert.equal(result.exact, false);
+test('percent to go calculates one starting XP and one exchange sequence', () => {
+  const result = estimateExchangeFromPercent(84, 40, 65.53);
+  assert.equal(result.exact, true);
   assert.equal(result.percentToGo, 65.53);
-  assert.ok(result.min.finalXp <= reference.finalXp);
-  assert.ok(result.max.finalXp >= reference.finalXp);
-  assert.ok(result.min.batches[0].shards > 1);
+  assert.equal(result.min.finalXp - result.min.xpGain, 9313736);
+  assert.deepEqual(result.min, result.max);
+  assert.deepEqual(result.min.batches.map(batch => batch.shards), [9, 14, 14, 3]);
+  assert.equal(result.min.xpGain, 1023300);
+  assert.equal(result.min.bulkXp, 1008000);
 });
 
-test('rounded percent bounds contain actual XP, including threshold edges', () => {
+test('percent conversion produces a single plan at boundaries and across levels', () => {
   for (const level of [1, 8, 84, 1000, 10000]) {
     const start = experienceForLevel(level);
     const next = experienceForLevel(level + 1);
     for (const percent of [0, 0.01, 50, 65.53, 99.99, 100]) {
       const result = estimateExchangeFromPercent(level, 80, percent);
-      for (const offset of [-0.009, 0, 0.009]) {
-        const remaining = Math.max(0, Math.min(100, percent + offset));
-        const xp = Math.max(start, Math.min(next - 1, next - Math.round((next - start) * remaining / 100)));
-        const exact = planExchange(level, xp, 80);
-        assert.ok(result.min.xpGain <= exact.xpGain && result.max.xpGain >= exact.xpGain);
-      }
+      const xp = Math.max(start, Math.min(next - 1,
+        next - Math.round((next - start) * percent / 100)));
+      assert.equal(result.exact, true);
+      assert.deepEqual(result.min, result.max);
+      assert.deepEqual(result.min, planExchange(level, xp, 80));
     }
   }
   for (const percent of [-1, 101, NaN, Infinity, '65.53']) {
     assert.throws(() => estimateExchangeFromPercent(84, 40, percent));
   }
-});
-
-test('percent rounding preserves alternative batches near a level-up threshold', () => {
-  const level = 1000;
-  const width = experienceForLevel(level + 1) - experienceForLevel(level);
-  const percent = level * 300 / width * 100;
-  const result = estimateExchangeFromPercent(level, 40, percent);
-  assert.equal(result.min.batches[0].shards, 2);
-  assert.equal(result.max.batches[0].shards, 1);
 });

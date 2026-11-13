@@ -20,7 +20,8 @@ then follow the delivery sequence that makes the most of your level-ups.
    `65,53` work.
 3. Select **Calculate exchange** to compare the totals and inspect the batches.
 
-For an exact plan, enter your **current total XP** under the optional settings.
+Percent to go calculates your starting XP and produces one exchange sequence.
+You can also enter your **current total XP** directly under the optional settings.
 Filling XP clears the percentage and vice versa. A manual level option is
 available when you prefer not to use the API.
 
@@ -46,10 +47,15 @@ shards that pay the same amount. At low levels, some batches still need only
 
 Minimum XP at level L: `(50L³ - 300L² + 850L - 600) / 3`.
 
+For percent-to-go input, remaining XP is the XP between the current and next
+level multiplied by the percentage divided by 100, rounded to whole XP.
+Starting XP is the next level threshold minus that remaining XP, kept within
+the current level. This yields one plan without lower/upper scenarios.
+
 | Available progress | Calculation |
 | --- | --- |
 | Level only | Bounds from the start of the level to 1 XP before the next. |
-| Percent to go | Narrower bounds allowing 0.01 percentage points on either side for client display precision. |
+| Percent to go | One sequence using XP calculated from the entered percentage. |
 | Total XP | An exact sequence for the supplied XP. |
 
 The event limit is **80 shards per character**. If some have already been
@@ -81,7 +87,7 @@ git diff --check
 ```
 
 The test suite checks level thresholds, overflow XP, sums of all batches,
-percentage conversion, rounding bounds, invalid input and API failures. Batch
+percentage conversion, integer XP rounding, invalid input and API failures. Batch
 XP is compared with an independent shard-by-shard simulation. CI runs on pushes
 to `main` and pull requests. See [the contribution guide](CONTRIBUTING.md) for
 browser checks and asset versioning.
