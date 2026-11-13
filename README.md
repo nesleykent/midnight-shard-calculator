@@ -2,7 +2,10 @@
 
 Planejador de trocas de Midnight Shards para o evento The Lightbearer do Tibia.
 
-Informe o nome do personagem e de 1 a 80 shards. A calculadora consulta o level
+Informe o nome do personagem e de 1 a 80 shards. Opcionalmente, copie a
+**% que falta para upar** do tooltip “You have … percent to go” do client.
+O campo aceita vírgula ou ponto e representa a porcentagem restante, não a
+porcentagem já completada. A calculadora consulta o level
 na [TibiaData](https://tibiadata.com/) e mostra:
 
 - XP mínima e máxima ao entregar lotes por level, level final e primeiro lote.
@@ -10,9 +13,12 @@ na [TibiaData](https://tibiadata.com/) e mostra:
 - Sequências ilustrativas para o início do level e para quando falta 1 XP para upar.
 
 O endpoint público de personagem não fornece a XP exata dentro do level.
-Por isso, as faixas consideram desde a XP mínima do level até 1 XP antes do
-próximo. Em **Ajustar XP**, informe a XP total atual do jogo para obter uma
-sequência exata. O level também pode ser informado manualmente se a API estiver
+Sem porcentagem ou XP total, as faixas consideram desde a XP mínima do level
+até 1 XP antes do próximo. Com a porcentagem, o cálculo restringe essa faixa
+a uma margem de 0,01 ponto percentual para cada lado, limitada ao level atual,
+pois a exibição do client tem precisão limitada. Em **Ajustar XP**, informe a
+XP total atual do jogo para obter uma sequência exata. Preencher a porcentagem
+limpa a XP total e vice-versa. O level também pode ser informado manualmente se a API estiver
 indisponível. O formulário não salva nomes nem dados de personagens.
 
 ## Cálculo
@@ -58,6 +64,9 @@ cancelada ao editar os campos e expira após 12 segundos. Apenas nome, level,
 mundo e vocação retornados pela API são usados em memória.
 
 ## Alterações
+
+- Campo opcional de porcentagem restante no formato do client, com margem para
+  arredondamento e suporte a vírgula ou ponto.
 
 - O fluxo principal passa de meta de XP e level manual para personagem e shards.
 - A simulação considera subidas de level e recomenda lotes, com comparação

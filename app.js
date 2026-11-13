@@ -1,10 +1,11 @@
 (() => {
-  const { estimateExchange } = MidnightShards;
+  const { estimateExchange, estimateExchangeFromPercent, parsePercentToGo } = MidnightShards;
   const $ = id => document.getElementById(id);
   const form = $('exchange-form');
   const nameInput = $('character-name');
   const shardsInput = $('shards');
   const xpInput = $('experience');
+  const percentInput = $('percent-to-go');
   const manualMode = $('manual-mode');
   const levelInput = $('manual-level');
   const button = $('calculate');
@@ -31,6 +32,12 @@
   }
 
   form.addEventListener('input', invalidate);
+  percentInput.addEventListener('input', () => {
+    if (percentInput.value.trim() !== '') xpInput.value = '';
+  });
+  xpInput.addEventListener('input', () => {
+    if (xpInput.value !== '') percentInput.value = '';
+  });
   manualMode.addEventListener('change', () => {
     $('manual-field').hidden = !manualMode.checked;
     levelInput.disabled = !manualMode.checked;
@@ -69,7 +76,8 @@
 
   function render(character, shards, estimate) {
     const { exact, min, max } = estimate;
-    $('result-mode').textContent = exact ? 'Plano com XP informada' : 'Estimativa por level';
+    const percentBased = estimate.percentToGo !== undefined;
+    $('result-mode').textContent = exact ? 'Plano com XP informada' : (percentBased ? 'Estimativa pela porcentagem' : 'Estimativa por level');
     $('result-title').textContent = manualMode.checked ? 'Sua troca' : character.name;
     $('character-level').textContent = `Level ${format(character.level)}`;
     $('character-info').textContent = [character.world, character.vocation, `${shards} shards`].filter(Boolean).join(' / ');
@@ -85,13 +93,15 @@
       ? (min.batches.length === 1 && max.batches.length === 1
         ? 'Pode entregar tudo de uma vez: dividir não aumenta a XP nesta troca.'
         : 'Entregue esse lote e recalcule o valor dos próximos shards no novo level.')
-      : 'O lote depende da XP que falta para upar. Informe sua XP total em “Ajustar XP” para saber a quantidade exata.';
+      : 'O lote depende da XP que falta para upar. Informe a % do client ou sua XP total em “Ajustar XP” para refinar o cálculo.';
     $('uncertainty-note').textContent = exact
       ? 'O plano usa a XP informada. Se ganhar ou perder XP antes da troca, calcule novamente.'
-      : 'A faixa vai do início do level até faltar 1 XP para upar. Os planos abaixo ilustram esses 2 cenários; sua sequência pode ser diferente.';
+      : (percentBased
+        ? `Cálculo com ${estimate.percentToGo.toLocaleString('pt-BR', { maximumFractionDigits: 10 })}% para upar. Como o client arredonda a %, usamos uma margem de 0,01 ponto percentual. Os lotes podem variar perto da subida de level; informe a XP total para um plano exato.`
+        : 'A faixa vai do início do level até faltar 1 XP para upar. Os planos abaixo ilustram esses 2 cenários; sua sequência pode ser diferente.');
     const plans = $('plans');
-    plans.replaceChildren(renderPlan(min, exact ? 'Sequência de troca' : 'Se estiver no início do level', exact));
-    if (!exact) plans.append(renderPlan(max, 'Se faltar 1 XP para upar', false));
+    plans.replaceChildren(renderPlan(min, exact ? 'Sequência de troca' : (percentBased ? 'Limite inferior da estimativa' : 'Se estiver no início do level'), exact));
+    if (!exact) plans.append(renderPlan(max, percentBased ? 'Limite superior da estimativa' : 'Se faltar 1 XP para upar', false));
     results.hidden = false;
     $('result-title').focus({ preventScroll: true });
   }
@@ -112,6 +122,7 @@
     let timedOut = false;
     try {
       const shards = Number(shardsInput.value);
+      const percent = parsePercentToGo(percentInput.value);
       let character;
       if (manualMode.checked) {
         character = { level: Number(levelInput.value), world: '', vocation: '' };
@@ -123,7 +134,9 @@
       }
       if (activeRequest !== request) return;
       const xp = xpInput.value === '' ? undefined : Number(xpInput.value);
-      render(character, shards, estimateExchange(character.level, shards, xp));
+      render(character, shards, percent === undefined
+        ? estimateExchange(character.level, shards, xp)
+        : estimateExchangeFromPercent(character.level, shards, percent));
       status.textContent = manualMode.checked ? 'Cálculo com level informado manualmente.' : 'Level consultado na TibiaData. Confira se corresponde ao jogo.';
     } catch (failure) {
       if (activeRequest !== request) return;

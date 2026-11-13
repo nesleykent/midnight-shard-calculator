@@ -60,7 +60,35 @@ var MidnightShards = (() => {
     return { exact, min, max };
   }
 
-  return { MAX_SHARDS, MAX_LEVEL, experienceForLevel, levelForExperience, planExchange, estimateExchange };
+  function parsePercentToGo(value) {
+    const text = value.trim();
+    if (text === '') return undefined;
+    const percent = Number(text.replace(',', '.'));
+    if (!/^\d+(?:[.,]\d+)?$/.test(text) || !Number.isFinite(percent) || percent < 0 || percent > 100) {
+      throw new Error('Informe a porcentagem que falta para upar, de 0 a 100. Use vírgula ou ponto nos decimais.');
+    }
+    return percent;
+  }
+
+  function estimateExchangeFromPercent(level, shards, percentToGo) {
+    if (!Number.isFinite(percentToGo) || percentToGo < 0 || percentToGo > 100) {
+      throw new Error('A porcentagem que falta para upar precisa estar entre 0 e 100.');
+    }
+    const start = experienceForLevel(level);
+    const next = experienceForLevel(level + 1);
+    const width = next - start;
+    // A two-decimal client display loses precision. A conservative margin of
+    // 0.01 percentage points covers both rounding and truncation, including 0/100.
+    const minXp = Math.max(start, Math.min(next - 1,
+      next - Math.ceil(width * Math.min(100, percentToGo + 0.01) / 100)));
+    const maxXp = Math.max(start, Math.min(next - 1,
+      next - Math.floor(width * Math.max(0, percentToGo - 0.01) / 100)));
+    return { exact: false, percentToGo,
+      min: planExchange(level, minXp, shards), max: planExchange(level, maxXp, shards) };
+  }
+
+  return { MAX_SHARDS, MAX_LEVEL, experienceForLevel, levelForExperience, planExchange,
+    estimateExchange, parsePercentToGo, estimateExchangeFromPercent };
 })();
 
 if (typeof module !== 'undefined') module.exports = MidnightShards;

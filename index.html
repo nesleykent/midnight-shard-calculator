@@ -36,10 +36,16 @@
             </div>
           </div>
 
+          <div class="field percent-field">
+            <label for="percent-to-go">% que falta para upar <span class="optional">(opcional)</span></label>
+            <input id="percent-to-go" type="text" inputmode="decimal" placeholder="Ex.: 65,53" autocomplete="off" aria-describedby="percent-hint" />
+            <p id="percent-hint" class="hint">Copie o “You have … percent to go” do client. É a % que falta, não a já completada. Aceita vírgula ou ponto.</p>
+          </div>
+
           <details id="adjustments" class="adjustments">
             <summary>Ajustar XP ou informar level manualmente</summary>
             <div class="adjustment-content">
-              <p class="hint">A TibiaData informa o level, mas não a XP dentro dele. Sem esse dado, mostramos uma faixa. Para definir os lotes exatos, copie sua XP total do jogo.</p>
+              <p class="hint">A TibiaData informa o level, mas não a XP dentro dele. Use a % do client acima ou, para máxima precisão, sua XP total do jogo. Preencher uma opção limpa a outra.</p>
               <div class="field">
                 <label for="experience">XP total atual <span class="optional">(opcional)</span></label>
                 <input id="experience" type="number" inputmode="numeric" min="0" step="1" placeholder="XP total, não a XP que falta" />

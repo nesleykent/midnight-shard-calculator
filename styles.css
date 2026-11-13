@@ -29,6 +29,7 @@ h3 { font-size: 0.875rem; font-weight: 600; }
 .calculator h2 { margin-bottom: 20px; }
 .fields { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; }
 .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.percent-field { margin-top: 16px; }
 label { font-size: 0.875rem; font-weight: 600; }
 input:not([type="checkbox"]) { width: 100%; min-height: 44px; border: 1px solid #b7adb8; border-radius: 6px; padding: 10px 12px; background: var(--surface); color: var(--text); font: inherit; }
 input::placeholder { color: #7a707d; }
