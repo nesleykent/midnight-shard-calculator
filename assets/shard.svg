@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs><linearGradient id="shard" x1="4" y1="44" x2="44" y2="4" gradientUnits="userSpaceOnUse"><stop stop-color="#fb724b"/><stop offset=".5" stop-color="#ff0069"/><stop offset="1" stop-color="#d300c5"/></linearGradient></defs>
+  <rect width="48" height="48" rx="14" fill="url(#shard)"/>
+  <path d="m24 8 12 13-12 19-12-19L24 8Z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M12 21h24M24 8v32" stroke="#fff" stroke-opacity=".65" stroke-width="1.5"/>
+</svg>

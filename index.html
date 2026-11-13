@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#f7f4f0" />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="description" content="Plan your Midnight Shard batches and make the most of each level-up in Tibia." />
-    <link rel="icon" href="data:," />
-    <link rel="stylesheet" href="styles.css?v=english-batch-totals-1" />
+    <link rel="icon" href="assets/shard.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css?v=instagram-style-1" />
     <script defer src="calculator.js?v=english-batch-totals-1"></script>
     <script defer src="tibiadata.js?v=english-batch-totals-1"></script>
     <script defer src="app.js?v=english-batch-totals-1"></script>
@@ -15,8 +15,13 @@
   <body>
     <main>
       <header class="page-header">
-        <p class="eyebrow">Tibia / The Lightbearer</p>
-        <h1>Midnight Shards</h1>
+        <div class="brand">
+          <img class="brand-icon" src="assets/shard.svg" alt="" width="44" height="44" />
+          <div>
+            <p class="eyebrow">Tibia / The Lightbearer</p>
+            <h1>Midnight Shards</h1>
+          </div>
+        </div>
         <p class="intro">More XP, fewer deliveries. Plan your batches before talking to Lucius.</p>
       </header>
 
@@ -95,7 +100,10 @@
       <footer>
         <p>Each shard gives 300 × your level at the start of a delivery. Batches stop at the next level-up, then the next delivery uses your new level.</p>
         <p>Already exchanged shards this event? Enter only what you will exchange now, within the total limit of 80. Check your level in-game: public data may be delayed.</p>
-        <a href="https://tibiadata.com/" target="_blank" rel="noopener noreferrer">Character data by TibiaData</a>
+        <nav class="footer-links" aria-label="Project links">
+          <a href="https://tibiadata.com/" target="_blank" rel="noopener noreferrer">Data by TibiaData</a>
+          <a href="https://github.com/nesleykent/midnight-shard-calculator" target="_blank" rel="noopener noreferrer">Source on GitHub</a>
+        </nav>
       </footer>
     </main>
   </body>
