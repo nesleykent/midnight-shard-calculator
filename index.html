@@ -1,471 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <title>Midnight Shard XP Calculator</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-          "Helvetica Neue", Arial, sans-serif;
-      }
-
-      body {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: radial-gradient(
-          circle at 0% 0%,
-          #fdf497 0,
-          #fdf497 5%,
-          #f58529 45%,
-          #dd2a7b 60%,
-          #8134af 80%,
-          #515bd4 100%
-        );
-        color: #1b1b1f;
-      }
-
-      .glass-card {
-        width: 95%;
-        max-width: 420px;
-        background: rgba(255, 255, 255, 0.94);
-        border-radius: 24px;
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28),
-          0 0 0 1px rgba(255, 255, 255, 0.7);
-        padding: 28px 26px 24px;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .glass-card::before {
-        content: "";
-        position: absolute;
-        width: 160px;
-        height: 160px;
-        background: radial-gradient(
-          circle,
-          rgba(253, 244, 151, 0.9),
-          transparent 70%
-        );
-        top: -60px;
-        right: -60px;
-        opacity: 0.55;
-        pointer-events: none;
-      }
-
-      .glass-card::after {
-        content: "";
-        position: absolute;
-        width: 140px;
-        height: 140px;
-        background: radial-gradient(
-          circle,
-          rgba(221, 42, 123, 0.45),
-          transparent 70%
-        );
-        bottom: -40px;
-        left: -40px;
-        opacity: 0.7;
-        pointer-events: none;
-      }
-
-      .header {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 18px;
-      }
-
-      .title-block {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-
-      .app-name {
-        font-size: 1.25rem;
-        font-weight: 700;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-      }
-
-      .subtitle {
-        font-size: 0.8rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: #6b6b73;
-      }
-
-      .badge {
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.14em;
-        border: 1px solid rgba(0, 0, 0, 0.06);
-        background: linear-gradient(
-          135deg,
-          rgba(253, 244, 151, 0.9),
-          rgba(245, 133, 41, 0.85)
-        );
-      }
-
-      .form {
-        position: relative;
-        margin-top: 4px;
-      }
-
-      .field-group {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        margin-bottom: 18px;
-      }
-
-      .field {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-
-      .field-label-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-      }
-
-      .field-label {
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: #5b5b63;
-      }
-
-      .hint {
-        font-size: 0.75rem;
-        color: #8a8a95;
-      }
-
-      .input-shell {
-        position: relative;
-        border-radius: 14px;
-        background: rgba(245, 245, 248, 0.96);
-        border: 1px solid rgba(0, 0, 0, 0.06);
-        padding: 10px 12px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .input-shell span.prefix {
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        letter-spacing: 0.16em;
-        color: #a2a2ad;
-        flex-shrink: 0;
-      }
-
-      .input-shell input {
-        width: 100%;
-        border: none;
-        background: transparent;
-        outline: none;
-        font-size: 0.96rem;
-        color: #202028;
-      }
-
-      .input-shell input::placeholder {
-        color: #b2b2be;
-      }
-
-      .primary-actions {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 18px;
-        margin-top: 2px;
-      }
-
-      .primary-button {
-        flex: 1;
-        border-radius: 999px;
-        border: none;
-        cursor: pointer;
-        padding: 11px 16px;
-        font-weight: 600;
-        font-size: 0.92rem;
-        text-transform: uppercase;
-        letter-spacing: 0.15em;
-        background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af, #515bd4);
-        color: #ffffff;
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
-        transition: transform 0.08s ease-out, box-shadow 0.08s ease-out,
-          filter 0.08s ease-out;
-      }
-
-      .primary-button:active {
-        transform: translateY(1px) scale(0.99);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
-        filter: brightness(0.97);
-      }
-
-      .chip {
-        padding: 7px 10px;
-        border-radius: 999px;
-        font-size: 0.72rem;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        border: 1px solid rgba(0, 0, 0, 0.12);
-        background: rgba(255, 255, 255, 0.7);
-        color: #6a6a74;
-        flex-shrink: 0;
-        text-align: center;
-      }
-
-      .results-card {
-        position: relative;
-        border-radius: 18px;
-        padding: 14px 14px 12px;
-        background: rgba(7, 5, 21, 0.96);
-        color: #f9f9ff;
-        overflow: hidden;
-      }
-
-      .results-card::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        opacity: 0.16;
-        background: radial-gradient(circle at 0% 0%, #fdf497 0, transparent 60%),
-          radial-gradient(circle at 100% 0%, #dd2a7b 0, transparent 55%),
-          radial-gradient(circle at 0% 100%, #515bd4 0, transparent 55%);
-        pointer-events: none;
-      }
-
-      .results-header {
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        margin-bottom: 10px;
-      }
-
-      .results-title {
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.16em;
-      }
-
-      .results-tag {
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.14em;
-        color: rgba(249, 249, 255, 0.72);
-      }
-
-      .results-main {
-        position: relative;
-        display: flex;
-        align-items: baseline;
-        gap: 10px;
-        margin-bottom: 8px;
-      }
-
-      .shards-value {
-        font-size: 2.4rem;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-      }
-
-      .shards-label {
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.16em;
-        color: rgba(249, 249, 255, 0.8);
-      }
-
-      .results-detail {
-        position: relative;
-        font-size: 0.78rem;
-        color: rgba(249, 249, 255, 0.78);
-        line-height: 1.5;
-      }
-
-      .results-detail strong {
-        font-weight: 600;
-      }
-
-      .error-message {
-        margin-top: 8px;
-        font-size: 0.76rem;
-        color: #d7263d;
-        min-height: 0.9em;
-      }
-
-      .note {
-        margin-top: 10px;
-        font-size: 0.72rem;
-        color: #6b6b73;
-        line-height: 1.4;
-      }
-
-      @media (max-width: 480px) {
-        .glass-card {
-          border-radius: 22px;
-          padding: 22px 18px 18px;
-        }
-
-        .app-name {
-          font-size: 1.1rem;
-        }
-
-        .shards-value {
-          font-size: 2.15rem;
-        }
-      }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f4f0" />
+    <meta name="description" content="Descubra como trocar seus Midnight Shards em lotes e aproveitar as subidas de level no Tibia." />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="calculator.js"></script>
+    <script defer src="tibiadata.js"></script>
+    <script defer src="app.js"></script>
+    <title>Midnight Shards | Planeje sua troca</title>
   </head>
   <body>
-    <div class="glass-card">
-      <div class="header">
-        <div class="title-block">
-          <div class="app-name">Midnight Shard</div>
-          <div class="subtitle">XP conversion calculator</div>
-        </div>
-        <div class="badge">300 × level per shard</div>
-      </div>
-      <form class="form" onsubmit="event.preventDefault(); calculateShards();">
-        <div class="field-group">
-          <div class="field">
-            <div class="field-label-row">
-              <div class="field-label">XP goal</div>
-              <div class="hint">Target XP amount</div>
+    <main>
+      <header class="page-header">
+        <p class="eyebrow">Tibia / The Lightbearer</p>
+        <h1>Midnight Shards</h1>
+        <p class="intro">Mais XP, menos entregas. Planeje seus lotes antes de falar com Lucius.</p>
+      </header>
+
+      <section class="calculator" aria-labelledby="form-title">
+        <h2 id="form-title">Planeje sua troca</h2>
+        <form id="exchange-form">
+          <div class="fields">
+            <div class="field">
+              <label for="character-name">Nome do personagem</label>
+              <input id="character-name" name="character" type="text" placeholder="Nome no Tibia" autocomplete="off" autocapitalize="words" spellcheck="false" maxlength="100" required aria-describedby="character-hint" />
+              <p id="character-hint" class="hint">O level vem da TibiaData.</p>
             </div>
-            <div class="input-shell">
-              <span class="prefix">XP</span>
-              <input
-                id="xpGoal"
-                type="number"
-                inputmode="decimal"
-                placeholder="160500"
-                min="0"
-                step="1"
-              />
+            <div class="field">
+              <label for="shards">Quantidade de shards</label>
+              <input id="shards" name="shards" type="number" inputmode="numeric" placeholder="1 a 80" min="1" max="80" step="1" required aria-describedby="shards-hint" />
+              <p id="shards-hint" class="hint">Até 80 por personagem no evento.</p>
             </div>
           </div>
 
-          <div class="field">
-            <div class="field-label-row">
-              <div class="field-label">Current level</div>
-              <div class="hint">Character level now</div>
+          <details id="adjustments" class="adjustments">
+            <summary>Ajustar XP ou informar level manualmente</summary>
+            <div class="adjustment-content">
+              <p class="hint">A TibiaData informa o level, mas não a XP dentro dele. Sem esse dado, mostramos uma faixa. Para definir os lotes exatos, copie sua XP total do jogo.</p>
+              <div class="field">
+                <label for="experience">XP total atual <span class="optional">(opcional)</span></label>
+                <input id="experience" type="number" inputmode="numeric" min="0" step="1" placeholder="XP total, não a XP que falta" />
+              </div>
+              <label class="checkbox-label" for="manual-mode"><input id="manual-mode" type="checkbox" /> Usar level manual, sem consultar a API</label>
+              <div id="manual-field" class="field" hidden>
+                <label for="manual-level">Level atual</label>
+                <input id="manual-level" type="number" inputmode="numeric" min="1" max="10000" step="1" disabled />
+              </div>
             </div>
-            <div class="input-shell">
-              <span class="prefix">LVL</span>
-              <input
-                id="level"
-                type="number"
-                inputmode="decimal"
-                placeholder="59"
-                min="1"
-                step="1"
-              />
-            </div>
+          </details>
+
+          <button id="calculate" class="primary-button" type="submit">Calcular troca</button>
+          <p id="error" class="error" role="alert" hidden></p>
+          <p id="lookup-status" class="hint" role="status"></p>
+        </form>
+      </section>
+
+      <section id="results" class="results" aria-labelledby="result-title" hidden>
+        <div class="result-heading">
+          <div>
+            <p class="eyebrow" id="result-mode"></p>
+            <h2 id="result-title" tabindex="-1">Sua troca</h2>
           </div>
+          <span class="level-badge" id="character-level"></span>
         </div>
-
-        <div class="primary-actions">
-          <button type="submit" class="primary-button">Compute shards</button>
-          <div class="chip">XP = shards × lvl × 300</div>
+        <p id="character-info" class="hint"></p>
+        <div class="xp-summary">
+          <p id="xp-caption" class="hint">XP com lotes por level</p>
+          <p id="xp-range" class="xp-value"></p>
+          <p id="final-level" class="hint"></p>
         </div>
-
-        <div class="results-card">
-          <div class="results-header">
-            <div class="results-title">Result</div>
-            <div class="results-tag">Midnight shards required</div>
-          </div>
-
-          <div class="results-main">
-            <div class="shards-value" id="shardsValue">0</div>
-            <div class="shards-label">shards</div>
-          </div>
-
-          <div class="results-detail" id="resultsDetail">
-            Enter XP goal and level then press Compute shards.
-          </div>
+        <dl class="comparison">
+          <div><dt>Entregando tudo de uma vez</dt><dd id="bulk-xp"></dd></div>
+          <div><dt>XP a mais com os lotes</dt><dd id="saved-xp" class="accent-text"></dd></div>
+        </dl>
+        <div class="next-batch">
+          <h3 id="next-title">Primeiro lote</h3>
+          <p id="first-batch" class="batch-value"></p>
+          <p id="batch-note"></p>
         </div>
+        <p id="uncertainty-note" class="result-note"></p>
+        <div id="plans"></div>
+      </section>
 
-        <div class="error-message" id="errorMessage"></div>
-
-        <div class="note">
-          This calculator uses the simple rule: one Midnight Shard grants 300 ×
-          current level experience at the time of exchange. The number shown
-          equals ceil(XP goal / (level × 300)). For maximal benefit in game,
-          exchange shards one by one as your level rises.
-        </div>
-      </form>
-    </div>
-    <script>
-      function calculateShards() {
-        var xpInput = document.getElementById("xpGoal");
-        var lvlInput = document.getElementById("level");
-        var shardsValue = document.getElementById("shardsValue");
-        var resultsDetail = document.getElementById("resultsDetail");
-        var errorMessage = document.getElementById("errorMessage");
-
-        var xpGoal = parseFloat(xpInput.value);
-        var level = parseFloat(lvlInput.value);
-
-        errorMessage.textContent = "";
-
-        if (isNaN(xpGoal) || xpGoal <= 0) {
-          errorMessage.textContent = "XP goal must exceed zero.";
-          shardsValue.textContent = "0";
-          resultsDetail.textContent =
-            "Set a positive XP goal for this calculation.";
-          return;
-        }
-
-        if (isNaN(level) || level <= 0) {
-          errorMessage.textContent = "Level must exceed zero.";
-          shardsValue.textContent = "0";
-          resultsDetail.textContent = "Set your current level above zero.";
-          return;
-        }
-
-        var xpPerShard = level * 300;
-        var rawShards = xpGoal / xpPerShard;
-        var requiredShards = Math.ceil(rawShards);
-
-        shardsValue.textContent = requiredShards.toString();
-
-        var roundedXp = requiredShards * xpPerShard;
-        var overshoot = roundedXp - xpGoal;
-
-        resultsDetail.innerHTML =
-          "<strong>Raw value</strong>: " +
-          rawShards.toFixed(3) +
-          " shards<br>" +
-          "<strong>Rounded up</strong>: " +
-          requiredShards +
-          " Midnight Shard" +
-          (requiredShards === 1 ? "" : "s") +
-          "<br>" +
-          "<strong>XP per shard</strong>: " +
-          xpPerShard.toLocaleString() +
-          " XP<br>" +
-          "<strong>Total XP at this shard count</strong>: " +
-          roundedXp.toLocaleString() +
-          " XP (overshoot " +
-          overshoot.toLocaleString() +
-          " XP)";
-      }
-    </script>
+      <footer>
+        <p>Cada shard rende 300 × o level no início da entrega. O plano agrupa shards até a próxima subida de level e recalcula o lote seguinte.</p>
+        <p>Já trocou shards neste evento? Informe só o que vai trocar agora, respeitando o limite total de 80. Confira o level no jogo: os dados públicos podem estar atrasados.</p>
+        <a href="https://tibiadata.com/" target="_blank" rel="noopener noreferrer">Dados de personagem por TibiaData</a>
+      </footer>
+    </main>
   </body>
 </html>
