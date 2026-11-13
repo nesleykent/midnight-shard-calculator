@@ -85,7 +85,7 @@
   function render(character, shards, estimate) {
     const { exact, min, max } = estimate;
     const percentBased = estimate.percentToGo !== undefined;
-    $('result-mode').textContent = exact ? 'Plan from total XP' : (percentBased ? 'Estimate from percent to go' : 'Estimate from level');
+    $('result-mode').textContent = percentBased ? 'Plan from percent to go' : (exact ? 'Plan from total XP' : 'Estimate from level');
     $('result-title').textContent = manualMode.checked ? 'Your exchange' : character.name;
     $('character-level').textContent = `Level ${format(character.level)}`;
     $('character-info').textContent = [character.world, character.vocation, `${shards} shards`].filter(Boolean).join(' / ');
@@ -103,14 +103,14 @@
         ? 'You can deliver everything at once: splitting does not increase XP for this exchange.'
         : 'Deliver this batch, then use your new level for the next batch.')
       : 'This batch depends on your XP remaining. Enter the client percentage or total XP to narrow the estimate.';
-    $('uncertainty-note').textContent = exact
-      ? 'This plan uses your supplied XP. Recalculate if you gain or lose XP before exchanging.'
-      : (percentBased
-        ? `Calculated with ${estimate.percentToGo.toLocaleString('en-US', { maximumFractionDigits: 10 })}% to go. We allow a 0.01 percentage-point margin for the client display. Batches may vary near a level-up; enter total XP for an exact plan.`
+    $('uncertainty-note').textContent = percentBased
+      ? `Starting XP: ${format(min.finalXp - min.xpGain)}, calculated from ${estimate.percentToGo.toLocaleString('en-US', { maximumFractionDigits: 10 })}% to go. Recalculate if your progress changes before exchanging.`
+      : (exact
+        ? 'This plan uses your supplied XP. Recalculate if you gain or lose XP before exchanging.'
         : 'The range covers the start of your level through to 1 XP before leveling up. The plans below illustrate those two scenarios; your sequence may differ.');
     const plans = $('plans');
-    plans.replaceChildren(renderPlan(min, exact ? 'Exchange sequence' : (percentBased ? 'Lower-bound estimate' : 'At the start of your level'), exact));
-    if (!exact) plans.append(renderPlan(max, percentBased ? 'Upper-bound estimate' : 'With 1 XP left to level up', false));
+    plans.replaceChildren(renderPlan(min, exact ? 'Exchange sequence' : 'At the start of your level', exact));
+    if (!exact) plans.append(renderPlan(max, 'With 1 XP left to level up', false));
     results.hidden = false;
     $('result-title').focus({ preventScroll: true });
   }
