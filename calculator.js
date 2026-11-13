@@ -21,13 +21,13 @@ var MidnightShards = (() => {
 
   function validate(level, shards, xp) {
     if (!Number.isInteger(level) || level < 1 || level > MAX_LEVEL) {
-      throw new Error('Informe um level inteiro de 1 a 10.000.');
+      throw new Error('Enter a whole-number level from 1 to 10,000.');
     }
     if (!Number.isInteger(shards) || shards < 1 || shards > MAX_SHARDS) {
-      throw new Error('Informe de 1 a 80 shards inteiros. O limite do evento é 80 por personagem.');
+      throw new Error('Enter 1 to 80 whole shards. The event limit is 80 per character.');
     }
     if (!Number.isSafeInteger(xp) || xp < experienceForLevel(level) || xp >= experienceForLevel(level + 1)) {
-      throw new Error('A XP total precisa estar dentro do level informado. Confira a XP no jogo.');
+      throw new Error('Total XP must fall within the entered level. Check your XP in-game.');
     }
   }
 
@@ -65,14 +65,14 @@ var MidnightShards = (() => {
     if (text === '') return undefined;
     const percent = Number(text.replace(',', '.'));
     if (!/^\d+(?:[.,]\d+)?$/.test(text) || !Number.isFinite(percent) || percent < 0 || percent > 100) {
-      throw new Error('Informe a porcentagem que falta para upar, de 0 a 100. Use vírgula ou ponto nos decimais.');
+      throw new Error('Enter the percentage remaining to level up, from 0 to 100. Use comma or dot decimals.');
     }
     return percent;
   }
 
   function estimateExchangeFromPercent(level, shards, percentToGo) {
     if (!Number.isFinite(percentToGo) || percentToGo < 0 || percentToGo > 100) {
-      throw new Error('A porcentagem que falta para upar precisa estar entre 0 e 100.');
+      throw new Error('The percentage remaining to level up must be between 0 and 100.');
     }
     const start = experienceForLevel(level);
     const next = experienceForLevel(level + 1);

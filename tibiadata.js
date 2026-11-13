@@ -4,14 +4,14 @@ var TibiaData = (() => {
       `https://api.tibiadata.com/v4/character/${encodeURIComponent(name.trim())}`,
       { signal: options.signal }
     );
-    if (response.status === 404) throw new Error('Personagem não encontrado. Confira o nome e tente novamente.');
-    if (response.status === 429) throw new Error('Muitas consultas à TibiaData. Aguarde um pouco e tente novamente.');
-    if (!response.ok) throw new Error('TibiaData indisponível agora. Tente novamente ou informe o level manualmente.');
+    if (response.status === 404) throw new Error('Character not found. Check the name and try again.');
+    if (response.status === 429) throw new Error('Too many TibiaData requests. Wait a moment and try again.');
+    if (!response.ok) throw new Error('TibiaData is unavailable. Try again or enter your level manually.');
     const data = await response.json();
     const character = data?.character?.character;
     if (!character || typeof character.name !== 'string' || !character.name.trim() ||
         !Number.isInteger(character.level) || character.level < 1) {
-      throw new Error('A TibiaData não retornou um personagem válido. Tente novamente ou informe o level manualmente.');
+      throw new Error('TibiaData did not return a valid character. Try again or enter your level manually.');
     }
     // Keep only the public fields needed by this calculator, in memory only.
     return { name: character.name, level: character.level,

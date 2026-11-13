@@ -1,64 +1,64 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#f7f4f0" />
-    <meta name="description" content="Descubra como trocar seus Midnight Shards em lotes e aproveitar as subidas de level no Tibia." />
+    <meta name="description" content="Plan your Midnight Shard batches and make the most of each level-up in Tibia." />
     <link rel="icon" href="data:," />
-    <link rel="stylesheet" href="styles.css?v=percent-to-go-1" />
-    <script defer src="calculator.js?v=percent-to-go-1"></script>
-    <script defer src="tibiadata.js"></script>
-    <script defer src="app.js?v=percent-to-go-1"></script>
-    <title>Midnight Shards | Planeje sua troca</title>
+    <link rel="stylesheet" href="styles.css?v=english-batch-totals-1" />
+    <script defer src="calculator.js?v=english-batch-totals-1"></script>
+    <script defer src="tibiadata.js?v=english-batch-totals-1"></script>
+    <script defer src="app.js?v=english-batch-totals-1"></script>
+    <title>Midnight Shards | Plan your exchange</title>
   </head>
   <body>
     <main>
       <header class="page-header">
         <p class="eyebrow">Tibia / The Lightbearer</p>
         <h1>Midnight Shards</h1>
-        <p class="intro">Mais XP, menos entregas. Planeje seus lotes antes de falar com Lucius.</p>
+        <p class="intro">More XP, fewer deliveries. Plan your batches before talking to Lucius.</p>
       </header>
 
       <section class="calculator" aria-labelledby="form-title">
-        <h2 id="form-title">Planeje sua troca</h2>
+        <h2 id="form-title">Plan your exchange</h2>
         <form id="exchange-form">
           <div class="fields">
             <div class="field">
-              <label for="character-name">Nome do personagem</label>
-              <input id="character-name" name="character" type="text" placeholder="Nome no Tibia" autocomplete="off" autocapitalize="words" spellcheck="false" maxlength="100" required aria-describedby="character-hint" />
-              <p id="character-hint" class="hint">O level vem da TibiaData.</p>
+              <label for="character-name">Character name</label>
+              <input id="character-name" name="character" type="text" placeholder="Name in Tibia" autocomplete="off" autocapitalize="words" spellcheck="false" maxlength="100" required aria-describedby="character-hint" />
+              <p id="character-hint" class="hint">Level is fetched from TibiaData.</p>
             </div>
             <div class="field">
-              <label for="shards">Quantidade de shards</label>
-              <input id="shards" name="shards" type="number" inputmode="numeric" placeholder="1 a 80" min="1" max="80" step="1" required aria-describedby="shards-hint" />
-              <p id="shards-hint" class="hint">Até 80 por personagem no evento.</p>
+              <label for="shards">Number of shards</label>
+              <input id="shards" name="shards" type="number" inputmode="numeric" placeholder="1 to 80" min="1" max="80" step="1" required aria-describedby="shards-hint" />
+              <p id="shards-hint" class="hint">Up to 80 per character during the event.</p>
             </div>
           </div>
 
           <div class="field percent-field">
-            <label for="percent-to-go">% que falta para upar <span class="optional">(opcional)</span></label>
-            <input id="percent-to-go" type="text" inputmode="decimal" placeholder="Ex.: 65,53" autocomplete="off" aria-describedby="percent-hint" />
-            <p id="percent-hint" class="hint">Copie o “You have … percent to go” do client. É a % que falta, não a já completada. Aceita vírgula ou ponto.</p>
+            <label for="percent-to-go">Percent to go <span class="optional">(optional)</span></label>
+            <input id="percent-to-go" type="text" inputmode="decimal" placeholder="e.g. 65.53" autocomplete="off" aria-describedby="percent-hint" />
+            <p id="percent-hint" class="hint">Copy “You have … percent to go” from the client. Enter the percentage remaining, not completed. Comma or dot decimals work.</p>
           </div>
 
           <details id="adjustments" class="adjustments">
-            <summary>Ajustar XP ou informar level manualmente</summary>
+            <summary>Set total XP or enter level manually</summary>
             <div class="adjustment-content">
-              <p class="hint">A TibiaData informa o level, mas não a XP dentro dele. Use a % do client acima ou, para máxima precisão, sua XP total do jogo. Preencher uma opção limpa a outra.</p>
+              <p class="hint">TibiaData provides your level, but not your progress within it. Use the client percentage above or your total XP for an exact plan. Filling one clears the other.</p>
               <div class="field">
-                <label for="experience">XP total atual <span class="optional">(opcional)</span></label>
-                <input id="experience" type="number" inputmode="numeric" min="0" step="1" placeholder="XP total, não a XP que falta" />
+                <label for="experience">Current total XP <span class="optional">(optional)</span></label>
+                <input id="experience" type="number" inputmode="numeric" min="0" step="1" placeholder="Total XP, not XP remaining" />
               </div>
-              <label class="checkbox-label" for="manual-mode"><input id="manual-mode" type="checkbox" /> Usar level manual, sem consultar a API</label>
+              <label class="checkbox-label" for="manual-mode"><input id="manual-mode" type="checkbox" /> Enter level manually, without the API</label>
               <div id="manual-field" class="field" hidden>
-                <label for="manual-level">Level atual</label>
+                <label for="manual-level">Current level</label>
                 <input id="manual-level" type="number" inputmode="numeric" min="1" max="10000" step="1" disabled />
               </div>
             </div>
           </details>
 
-          <button id="calculate" class="primary-button" type="submit">Calcular troca</button>
+          <button id="calculate" class="primary-button" type="submit">Calculate exchange</button>
           <p id="error" class="error" role="alert" hidden></p>
           <p id="lookup-status" class="hint" role="status"></p>
         </form>
@@ -68,22 +68,23 @@
         <div class="result-heading">
           <div>
             <p class="eyebrow" id="result-mode"></p>
-            <h2 id="result-title" tabindex="-1">Sua troca</h2>
+            <h2 id="result-title" tabindex="-1">Your exchange</h2>
           </div>
           <span class="level-badge" id="character-level"></span>
         </div>
         <p id="character-info" class="hint"></p>
         <div class="xp-summary">
-          <p id="xp-caption" class="hint">XP com lotes por level</p>
+          <p id="xp-caption" class="hint">Total XP in level-based batches</p>
           <p id="xp-range" class="xp-value"></p>
           <p id="final-level" class="hint"></p>
         </div>
         <dl class="comparison">
-          <div><dt>Entregando tudo de uma vez</dt><dd id="bulk-xp"></dd></div>
-          <div><dt>XP a mais com os lotes</dt><dd id="saved-xp" class="accent-text"></dd></div>
+          <div><dt>All at once</dt><dd id="bulk-xp"></dd></div>
+          <div><dt>In batches (total)</dt><dd id="batches-xp"></dd></div>
+          <div><dt>Extra XP from batching</dt><dd id="saved-xp" class="accent-text"></dd></div>
         </dl>
         <div class="next-batch">
-          <h3 id="next-title">Primeiro lote</h3>
+          <h3 id="next-title">First batch</h3>
           <p id="first-batch" class="batch-value"></p>
           <p id="batch-note"></p>
         </div>
@@ -92,9 +93,9 @@
       </section>
 
       <footer>
-        <p>Cada shard rende 300 × o level no início da entrega. O plano agrupa shards até a próxima subida de level e recalcula o lote seguinte.</p>
-        <p>Já trocou shards neste evento? Informe só o que vai trocar agora, respeitando o limite total de 80. Confira o level no jogo: os dados públicos podem estar atrasados.</p>
-        <a href="https://tibiadata.com/" target="_blank" rel="noopener noreferrer">Dados de personagem por TibiaData</a>
+        <p>Each shard gives 300 × your level at the start of a delivery. Batches stop at the next level-up, then the next delivery uses your new level.</p>
+        <p>Already exchanged shards this event? Enter only what you will exchange now, within the total limit of 80. Check your level in-game: public data may be delayed.</p>
+        <a href="https://tibiadata.com/" target="_blank" rel="noopener noreferrer">Character data by TibiaData</a>
       </footer>
     </main>
   </body>

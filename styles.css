@@ -72,6 +72,7 @@ th { color: var(--muted); font-size: 0.75rem; font-weight: 500; }
 th:first-child, td:first-child { text-align: left; padding-left: 0; }
 th:last-child, td:last-child { padding-right: 0; }
 tbody tr:last-child td { border-bottom: 0; }
+tfoot th, tfoot td { border-top: 1px solid var(--border); border-bottom: 0; font-weight: 650; color: var(--text); }
 footer { margin: 20px 4px; font-size: 0.75rem; color: var(--muted); }
 footer p { margin-bottom: 8px; }
 a { color: var(--accent); text-underline-offset: 3px; }

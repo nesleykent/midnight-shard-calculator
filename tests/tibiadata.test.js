@@ -16,10 +16,10 @@ test('encodes character names and reads the documented v4 response', async () =>
 });
 
 test('handles missing characters, rate limits, failures and malformed responses', async () => {
-  for (const [status, message] of [[404, /encontrado/], [429, /consultas/], [502, /indisponível/]]) {
+  for (const [status, message] of [[404, /not found/], [429, /requests/], [502, /unavailable/]]) {
     await assert.rejects(fetchCharacter('Example Knight', { fetch: async () => ({ ok: false, status }) }), message);
   }
   for (const invalid of [{}, { character: { character: {} } }, { character: { character: { name: 'Example Knight', level: 0 } } }]) {
-    await assert.rejects(fetchCharacter('Example Knight', { fetch: async () => ({ ok: true, json: async () => invalid }) }), /válido/);
+    await assert.rejects(fetchCharacter('Example Knight', { fetch: async () => ({ ok: true, json: async () => invalid }) }), /valid character/);
   }
 });

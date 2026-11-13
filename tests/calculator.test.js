@@ -56,6 +56,9 @@ test('batched plans match an independent per-shard simulation across progress an
         const plan = planExchange(level, xp, shards);
         assert.equal(plan.finalXp, total);
         assert.equal(plan.batches.reduce((sum, b) => sum + b.shards, 0), shards);
+        assert.equal(plan.batches.reduce((sum, b) => sum + b.xpGain, 0), plan.xpGain);
+        assert.equal(plan.bulkXp, shards * level * 300);
+        assert.equal(plan.savedXp, plan.xpGain - plan.bulkXp);
         assert.ok(plan.savedXp >= 0);
         assert.ok(plan.batches.length <= shards);
         const range = estimateExchange(level, shards);

@@ -1,74 +1,77 @@
 # Midnight Shard Calculator
 
-Planejador de trocas de Midnight Shards para o evento The Lightbearer do Tibia.
+Exchange planner for the Tibia Lightbearer event. Enter a character name and
+1 to 80 shards. TibiaData supplies the level. Optionally copy the percentage
+remaining from the client's **“You have … percent to go”** tooltip. Comma and
+dot decimals are accepted. This is the percentage remaining, not completed.
 
-Informe o nome do personagem e de 1 a 80 shards. Opcionalmente, copie a
-**% que falta para upar** do tooltip “You have … percent to go” do client.
-O campo aceita vírgula ou ponto e representa a porcentagem restante, não a
-porcentagem já completada. A calculadora consulta o level
-na [TibiaData](https://tibiadata.com/) e mostra:
+The comparison shows both totals:
 
-- XP mínima e máxima ao entregar lotes por level, level final e primeiro lote.
-- XP de uma entrega única e quanto os lotes podem render a mais.
-- Sequências ilustrativas para o início do level e para quando falta 1 XP para upar.
+- **All at once**: every shard paid at the starting level.
+- **In batches (total)**: the sum of XP from all deliveries in the batch plan.
+- **Extra XP from batching**: batch total minus the all-at-once total.
 
-O endpoint público de personagem não fornece a XP exata dentro do level.
-Sem porcentagem ou XP total, as faixas consideram desde a XP mínima do level
-até 1 XP antes do próximo. Com a porcentagem, o cálculo restringe essa faixa
-a uma margem de 0,01 ponto percentual para cada lado, limitada ao level atual,
-pois a exibição do client tem precisão limitada. Em **Ajustar XP**, informe a
-XP total atual do jogo para obter uma sequência exata. Preencher a porcentagem
-limpa a XP total e vice-versa. O level também pode ser informado manualmente se a API estiver
-indisponível. O formulário não salva nomes nem dados de personagens.
+Each plan includes a total row with its shard count and summed XP. The result
+also shows the final level and first batch size.
 
-## Cálculo
+## Progress and precision
 
-Cada shard rende `300 × level` no início de cada entrega. Um lote termina no
-primeiro shard que sobe o level; os shards seguintes usam o novo level. A XP que
-ultrapassa o limite do level é mantida no cálculo. Isso produz o mesmo ganho da
-troca individual, agrupando os shards que rendem o mesmo valor. Em levels baixos,
-um único shard pode subir vários levels, então alguns lotes ainda terão 1 shard.
+The public character endpoint provides a level but no exact XP within it.
+Without progress, estimates cover the start of the level through to 1 XP before
+the next. With a percentage, the range narrows to a conservative margin of
+0.01 percentage points on either side, clipped to the current level, to allow
+for the client's limited display precision.
 
-XP mínima para o level L: `(50L³ - 300L² + 850L - 600) / 3`.
+For an exact plan, enter current total XP under **Set total XP or enter level
+manually**. Filling total XP clears the percentage and vice versa. Manual level
+entry is also available if the API is unavailable. The form does not persist
+character names or data.
 
-O limite de troca do evento é 80 shards por personagem. Se já entregou parte,
-informe apenas a quantidade restante que pretende trocar, respeitando esse
-limite total. Os dados públicos podem estar atrasados; confira o level no jogo
-e recalcule se ganhar ou perder XP antes de entregar.
+## Calculation
 
-## Executar e validar
+Each shard grants `300 × level` at the start of a delivery. A batch stops at
+the first shard that levels up. The next delivery uses the new level. XP above
+a level threshold is carried forward. This matches the XP from individual
+exchanges while grouping shards with the same payout. At low levels, one shard
+can advance several levels, so some batches will still contain only one shard.
 
-Site estático, sem dependências de produção ou etapa de build. Sirva a pasta:
+Minimum XP at level L: `(50L³ - 300L² + 850L - 600) / 3`.
+
+The event limit is 80 shards per character. If some have already been exchanged,
+enter only the amount still intended for exchange, within that total limit.
+Public data may be delayed: check the level in-game and recalculate if XP changes.
+
+## Run and validate
+
+Static site with no production dependencies or build step:
 
 ```sh
 python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
-Abra `http://127.0.0.1:8000`. O endereço antigo `midnight-shards.html` redireciona
-para a mesma calculadora. A hospedagem existente de arquivos estáticos continua
-compatível.
+Open `http://127.0.0.1:8000`. The legacy `midnight-shards.html` URL redirects to
+the same calculator. Static asset URLs are versioned to keep cached scripts
+consistent with the form when publishing updates.
 
-Testes com Node.js 20 ou superior:
+Tests require Node.js 20 or newer:
 
 ```sh
 node --test
 ```
 
-Os testes verificam limites de level, XP excedente, lotes, faixas sem XP exata,
-validação e respostas da API. O ganho dos lotes é comparado com uma simulação
-independente shard por shard. Levels de 1 a 10.000 são suportados.
+Tests cover level boundaries, overflow XP, batches, summed totals, unknown-XP
+ranges, percent-to-go conversion and rounding, validation and API responses.
+Batch XP is checked against an independent per-shard simulation. Levels from
+1 to 10,000 are supported.
 
-Contrato da integração: [TibiaData OpenAPI](https://docs.tibiadata.com/),
-`GET /v4/character/{name}`, usando `character.character.level`. A consulta é
-cancelada ao editar os campos e expira após 12 segundos. Apenas nome, level,
-mundo e vocação retornados pela API são usados em memória.
+Integration contract: [TibiaData OpenAPI](https://docs.tibiadata.com/),
+`GET /v4/character/{name}`, using `character.character.level`. Lookups are
+cancelled when fields change and time out after 12 seconds. Only name, level,
+world and vocation are used, in memory.
 
-## Alterações
+## Changes
 
-- Campo opcional de porcentagem restante no formato do client, com margem para
-  arredondamento e suporte a vírgula ou ponto.
-
-- O fluxo principal passa de meta de XP e level manual para personagem e shards.
-- A simulação considera subidas de level e recomenda lotes, com comparação
-  contra uma entrega única.
-- Interface em português, acessível por teclado e adaptada para telas pequenas.
+- English interface with an explicit all-at-once versus summed-batch comparison.
+- Optional client percent-to-go input with comma or dot decimals.
+- Character lookup and shard quantity replace the old XP-goal form.
+- Level-aware batch planning, keyboard access and small-screen layouts.
